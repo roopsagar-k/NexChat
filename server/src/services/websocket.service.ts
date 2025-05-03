@@ -1,6 +1,7 @@
 import { Server, Socket } from "socket.io";
 import { MessageService } from "./message.service";
 import ApiError from "../utils/api-error.utils";
+import User from "../models/user.model";
 
 export class Websocket {
   private static instance: Websocket;
@@ -27,10 +28,18 @@ export class Websocket {
 
   private setUpListeners() {
     this.io.on("connection", (socket: Socket) => {
-      const userId = socket.handshake.auth.userId;
-      if (userId) {
-        this.users.set(userId, socket.id);
-      }
+      const userId = socket.data.user.id;
+      console.log("new connection found with socketid", socket.id);
+
+      socket.on("register-user", async () => {
+        if (userId) {
+          this.users.set(userId, socket.id);
+          const notifications = await MessageService.getMessagesAfterLastSeen(
+            userId
+          );
+          socket.emit("notify-unread-messages", { notifications });
+        }
+      });
 
       //Chat Events
       socket.on("join-chat", ({ chatId }) => {
@@ -115,10 +124,14 @@ export class Websocket {
         }
       );
 
-      socket.on("disconnect", () => {
-        this.users.forEach((sid, uid) => {
-          if (sid === socket.id) this.users.delete(uid);
-        });
+      socket.on("disconnect", async () => {
+        for (const [uid, sid] of this.users.entries()) {
+          if (sid === socket.id) {
+            this.users.delete(uid);
+            await User.findByIdAndUpdate(uid, { lastActive: new Date() });
+            break;
+          }
+        }
       });
     });
   }

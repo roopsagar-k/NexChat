@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import ApiError from "../utils/api-error.utils";
+import { JWT } from "../services/jwt.service";
+import { Socket, ExtendedError } from "socket.io";
 
 export const authenticateJWT = (
   req: Request,
@@ -13,11 +15,23 @@ export const authenticateJWT = (
     return next(ApiError.unauthorized("No token provided"));
   }
 
-  jwt.verify(token, process.env.JWT_SECRET as string, (err, user) => {
-    if (err) {
+  const { valid, user, error } = JWT.verifyJWT(token);
+
+  if (!valid && error) {
+    return next(ApiError.unauthorized("Token is not valid"));
+  }
+
+  req.user = user as { id: string; username: string; email: string };
+  next();
+};
+
+export const verifySocketJWT = (socket: Socket, next: (err?: ExtendedError) => void) => {
+    const token = socket.handshake.auth.token;
+    const { valid, user, error } = JWT.verifyJWT(token);
+
+    if(!valid && error) {
       return next(ApiError.unauthorized("Token is not valid"));
     }
-    req.user = user as { id: string; username: string; email: string };
-    next();
-  });
-};
+    socket.data.user = user;
+    return next();
+}

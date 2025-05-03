@@ -7,7 +7,7 @@ import rateLimit from "express-rate-limit";
 import { setupWebSocket } from "./socket";
 import { Server } from "socket.io";
 import { ENV } from "./config";
-import { authenticateJWT } from "./middleware/auth..middleware";
+import { verifySocketJWT } from "./middleware/auth..middleware";
 
 declare global {
   namespace Express {
@@ -57,7 +57,7 @@ app.use((err: ApiError, _req: Request, res: Response, _next: NextFunction) => {
 
 
 //sockets authentication
-// io.use();
+io.use(verifySocketJWT);
 setupWebSocket(io);
 
 server.listen(serverConfig.socketPort, () => {

@@ -8,4 +8,13 @@ export class JWT {
   static generateToken(payload: object) {
     return jwt.sign(payload, this.AUTH_SECRET);
   }
+
+  static verifyJWT(token: string) {
+    try {
+      const user = jwt.verify(token, process.env.JWT_SECRET as string);
+      return { valid: true, user };
+    } catch (error) {
+      return { valid: false, error };
+    }
+  }
 }
