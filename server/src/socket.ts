@@ -1,5 +1,7 @@
 import { Server } from "socket.io";
+import { Websocket } from "./services/websocket.service";
 
 export function setupWebSocket(io: Server) {
-    //initialize websocket
+  //initialize websocket
+  Websocket.intialize(io);
 }
