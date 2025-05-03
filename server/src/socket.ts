@@ -3,5 +3,5 @@ import { Websocket } from "./services/websocket.service";
 
 export function setupWebSocket(io: Server) {
   //initialize websocket
-  Websocket.intialize(io);
+  Websocket.initialize(io);
 }

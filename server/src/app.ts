@@ -8,6 +8,7 @@ import { setupWebSocket } from "./socket";
 import { Server } from "socket.io";
 import { ENV } from "./config";
 import { verifySocketJWT } from "./middleware/auth..middleware";
+import cors from "cors";
 
 declare global {
   namespace Express {
@@ -37,8 +38,13 @@ const limiter = rateLimit({
   legacyHeaders: true,
 });
 
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+  })
+);
 app.use(express.json());
-app.use(express.urlencoded({ extended: true, limit: '1mb' }));
+app.use(express.urlencoded({ extended: true, limit: "1mb" }));
 app.use("/api", limiter);
 
 //routes
@@ -54,7 +60,6 @@ app.use((err: ApiError, _req: Request, res: Response, _next: NextFunction) => {
     errors: err.errors || [],
   });
 });
-
 
 //sockets authentication
 io.use(verifySocketJWT);
