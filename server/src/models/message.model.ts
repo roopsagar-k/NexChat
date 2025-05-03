@@ -3,7 +3,7 @@ import mongoose, { Document, Types, Schema } from "mongoose";
 interface IMessage extends Document {
   _id: Types.ObjectId;
   chatId: Types.ObjectId;
-  sender: Types.ObjectId;
+  senderId: Types.ObjectId;
   content: string;
   attachments?: string[];
 }
@@ -11,7 +11,7 @@ interface IMessage extends Document {
 const messageSchema = new Schema<IMessage>(
   {
     chatId: { type: Schema.Types.ObjectId, ref: "Chat", required: true },
-    sender: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    senderId: { type: Schema.Types.ObjectId, ref: "User", required: true },
     content: { type: String, required: true },
     attachments: [{ type: String }],
   },
