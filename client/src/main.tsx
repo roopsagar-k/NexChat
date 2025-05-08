@@ -5,8 +5,4 @@ import App from "./App.tsx";
 import axios from "axios";
 axios.defaults.baseURL = "http://localhost:3000";
 
-createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <App />
-  </StrictMode>
-);
+createRoot(document.getElementById("root")!).render(<App />);

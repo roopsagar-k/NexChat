@@ -15,14 +15,11 @@ export const getAllUsers = asyncHandler(async (req: Request, res: Response) => {
   let users = [];
   if (query) {
     users = await User.find({
-      $or: [
-        { name: { $regex: query } },
-        { email: { $regex: query } },
-      ],
+      $or: [{ name: { $regex: query } }, { email: { $regex: query } }],
       _id: { $ne: userId },
-    });
+    }).select("-password");
   } else {
-    users = await User.find({ _id: { $ne: userId } });
+    users = await User.find({ _id: { $ne: userId } }).select("-password");
   }
 
   res
@@ -30,7 +27,7 @@ export const getAllUsers = asyncHandler(async (req: Request, res: Response) => {
     .json(
       new ApiResponse(
         200,
-        { users },
+        users,
         users.length > 0 ? "Fetched users successfully" : "No users found"
       )
     );

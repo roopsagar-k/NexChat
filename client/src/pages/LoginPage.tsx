@@ -1,5 +1,3 @@
-"use client";
-
 import type React from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -17,7 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { AlertCircle, MessageSquare } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import axios from "axios";
+import { useAuth } from "@/hooks/AuthProvider";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -25,8 +23,10 @@ export default function LoginPage() {
   const [errors, setErrors] = useState<{ email?: string; password?: string }>(
     {}
   );
-  const [isLoading, setIsLoading] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
+
+  // Use the login function from our auth hook
+  const { login, loading: isLoading } = useAuth();
   const navigate = useNavigate();
 
   const validateForm = () => {
@@ -52,23 +52,17 @@ export default function LoginPage() {
 
     if (!validateForm()) return;
 
-    setIsLoading(true);
-
     try {
-      const response = await axios.post("/api/auth/login", { email, password });
-
-      console.log(response);
-
-      // Successful login
+      // Use the login function from AuthProvider
+      await login(email, password);
       navigate("/home");
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        setApiError(error.response?.data?.message || "Failed to login");
+      // Handle login errors
+      if (error instanceof Error) {
+        setApiError(error.message || "Failed to login");
       } else {
         setApiError("An error occurred during login");
       }
-    } finally {
-      setIsLoading(false);
     }
   };
 

@@ -45,6 +45,7 @@ export const loginController = asyncHandler(
       .status(200)
       .cookie("token", token, {
         httpOnly: true,
+        sameSite: "lax",
         secure: process.env.NODE_ENV === "production",
       })
       .json(
@@ -63,8 +64,8 @@ export const logoutController = asyncHandler(
       .status(200)
       .clearCookie("token", {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production", 
-        sameSite: "lax", 
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
       })
       .json(new ApiResponse(200, {}, "User logged out from the session"));
   }
@@ -72,12 +73,7 @@ export const logoutController = asyncHandler(
 
 export const getCurrentUser = asyncHandler(
   async (req: Request, res: Response, _next: NextFunction) => {
-    const userId = req.user?.id;
-    if (!userId) {
-      throw ApiError.unauthorized("user not authenticated");
-    }
-
-    const user = await User.findById(userId);
+    const user = req.user;
     res
       .status(200)
       .json(new ApiResponse(200, { user }, "User fetched successfully"));

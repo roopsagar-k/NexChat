@@ -9,6 +9,7 @@ import { Server } from "socket.io";
 import { ENV } from "./config";
 import { verifySocketJWT } from "./middleware/auth..middleware";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 
 declare global {
   namespace Express {
@@ -28,7 +29,8 @@ const io = new Server(server, {
   cors: {
     origin: ENV.CLIENT_URL,
     credentials: true,
-    methods: ["GET", "POST"],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   },
 });
 const limiter = rateLimit({
@@ -41,8 +43,10 @@ const limiter = rateLimit({
 app.use(
   cors({
     origin: "http://localhost:5173",
+    credentials: true,
   })
 );
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true, limit: "1mb" }));
 app.use("/api", limiter);

@@ -9,7 +9,9 @@ export const authenticateJWT = (
   _res: Response,
   next: NextFunction
 ) => {
-  const token = req.headers["cookie"]?.split("=")[1];
+  const token = req.cookies.token;
+
+  console.log('token from middleware', token)
 
   if (!token) {
     return next(ApiError.unauthorized("No token provided"));
