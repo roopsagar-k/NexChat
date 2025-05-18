@@ -24,6 +24,7 @@ export const createOrGetOnetoOneChat = asyncHandler(
         "Uable to create one to one chat, Please try again!"
       );
     }
+  
     res
       .status(200)
       .json(new ApiResponse(200, chat, "One to one chat created successfully"));
@@ -97,10 +98,10 @@ export const createGroupChat = asyncHandler(
 
 export const getAllGroupChats = asyncHandler(
   async (req: Request, res: Response) => {
-    const page = Number(req.query.page);
-    const limit = Number(req.body.limit);
+    const page = Number(req.query?.page);
+    const limit = Number(req.body?.limit);
     const userId = req.user?.id;
-
+    
     if (!userId) {
       throw ApiError.unauthorized("User not authenticated");
     }

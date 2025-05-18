@@ -8,6 +8,7 @@ type AuthContextType = {
   error: string | null;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
+  refreshUser: () => Promise<void>; // Added this function
 };
 
 const AuthContext = createContext<AuthContextType>({
@@ -16,6 +17,7 @@ const AuthContext = createContext<AuthContextType>({
   error: null,
   login: async () => {},
   logout: async () => {},
+  refreshUser: async () => {}, // Added this function
 });
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -34,8 +36,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         withCredentials: true,
       });
       const { data } = response;
-      setUser(data.data.user);
-      setError(null);
+
+      // Log the user data for debugging
+      console.log("Fetched user data:", data.data.user);
+
+      if (data.data.user) {
+        setUser(data.data.user);
+        setError(null);
+      } else {
+        console.warn("No user data returned from /api/auth/me");
+        setUser(null);
+      }
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.error("Auth error:", error.response?.data || error.message);
@@ -47,6 +58,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  // Public method to refresh user data
+  const refreshUser = async () => {
+    return getUser();
+  };
+
   const login = async (email: string, password: string) => {
     setLoading(true);
     try {
@@ -55,7 +71,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         { email, password },
         { withCredentials: true }
       );
-      await getUser(); 
+
+      console.log("Login successful:", response.data);
+
+      // Fetch the user data after successful login
+      await getUser();
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.error("Login error:", error.response?.data || error.message);
@@ -80,11 +100,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // Initial auth check
   useEffect(() => {
+    console.log("Performing initial auth check...");
     getUser();
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, loading, error, login, logout }}>
+    <AuthContext.Provider
+      value={{ user, loading, error, login, logout, refreshUser }}
+    >
       {children}
     </AuthContext.Provider>
   );
@@ -93,7 +116,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    console.warn("useAuth should be used with AuthContext Provider");
+    console.error("useAuth must be used within an AuthProvider");
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };

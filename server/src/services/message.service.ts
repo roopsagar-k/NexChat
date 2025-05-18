@@ -21,7 +21,7 @@ export class MessageService {
       createdAt: { $gt: lastSeen },
       sender: { $ne: userId },
     })
-      .populate("senderId", "username email")
+      .populate("sender", "username email")
       .populate("chatId")
       .sort({ createdAt: 1 });
 
@@ -31,12 +31,12 @@ export class MessageService {
   static async addMessage(userId: string, chatId: string, message: string) {
     const createdMessage = await Message.create({
       chatId,
-      senderId: userId,
+      sender: userId,
       content: message,
     });
 
     return await Message.findById(createdMessage._id)
-      .populate("senderId", "username email")
+      .populate("sender", "username email")
       .populate("chatId");
   }
 

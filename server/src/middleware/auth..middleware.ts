@@ -11,8 +11,6 @@ export const authenticateJWT = (
 ) => {
   const token = req.cookies.token;
 
-  console.log('token from middleware', token)
-
   if (!token) {
     return next(ApiError.unauthorized("No token provided"));
   }
@@ -27,13 +25,15 @@ export const authenticateJWT = (
   next();
 };
 
-export const verifySocketJWT = (socket: Socket, next: (err?: ExtendedError) => void) => {
-    const token = socket.handshake.auth.token;
-    const { valid, user, error } = JWT.verifyJWT(token);
-
-    if(!valid && error) {
-      return next(ApiError.unauthorized("Token is not valid"));
-    }
-    socket.data.user = user;
-    return next();
-}
+export const verifySocketJWT = (
+  socket: Socket,
+  next: (err?: ExtendedError) => void
+) => {
+  const user = socket.handshake.auth.user;
+  console.log("user from socket verify middleware", JSON.stringify(user));
+  if (!user) {
+    return next(ApiError.unauthorized("Token is not valid"));
+  }
+  socket.data.user = user;
+  return next();
+};

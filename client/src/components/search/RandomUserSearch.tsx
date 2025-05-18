@@ -13,7 +13,7 @@ const RandomUserSearch = () => {
     console.log("Searching for:", searchQuery);
     const { data: users } = await requestHandler({
       method: "GET",
-      url: "/api/users",
+      endpoint: "/api/users",
       params: {
         search: searchQuery.trim(),
       },

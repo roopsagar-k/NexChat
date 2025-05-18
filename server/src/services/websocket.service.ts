@@ -9,6 +9,7 @@ export class Websocket {
   private users: Map<string, string>; // userId -> socketId
 
   private constructor(io: Server) {
+    console.log("contructor called")
     this.io = io;
     this.users = new Map();
     this.setUpListeners();
@@ -28,10 +29,11 @@ export class Websocket {
 
   private setUpListeners() {
     this.io.on("connection", (socket: Socket) => {
-      const userId = socket.data.user.id;
+      const userId = socket.data.user._id;
       console.log("new connection found with socketid", socket.id);
 
       socket.on("register-user", async () => {
+        console.log("register user event triggered")
         if (userId) {
           this.users.set(userId, socket.id);
           const notifications = await MessageService.getMessagesAfterLastSeen(

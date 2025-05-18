@@ -73,7 +73,11 @@ export const logoutController = asyncHandler(
 
 export const getCurrentUser = asyncHandler(
   async (req: Request, res: Response, _next: NextFunction) => {
-    const user = req.user;
+    const user = {
+      _id: req.user?.id,
+      username: req.user?.username,
+      email: req.user?.email,
+    };
     res
       .status(200)
       .json(new ApiResponse(200, { user }, "User fetched successfully"));

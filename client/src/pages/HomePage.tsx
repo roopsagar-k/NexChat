@@ -4,6 +4,7 @@ import { useState } from "react";
 import { PanelStatus } from "@/lib/types/types";
 import SidebarContent from "@/components/Sidebar/SidebarContent";
 import { ChatContextProvder } from "@/context/ChatsContext";
+import ChatSection from "@/components/chat/ChatSection";
 
 const HomePage = () => {
   const [panelStatus, setPanelStatus] = useState<PanelStatus>("chats");
@@ -20,7 +21,9 @@ const HomePage = () => {
             <SidebarContent active={panelStatus} />
           </div>
         </div>
-        <div className="col-span-7"></div>
+        <div className="col-span-7">
+          <ChatSection />
+        </div>
       </div>
     </ChatContextProvder>
   );

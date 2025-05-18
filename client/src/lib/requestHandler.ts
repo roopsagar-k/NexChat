@@ -2,7 +2,7 @@ import axios, { AxiosError } from "axios";
 
 interface IRequestHandler {
   method: "POST" | "GET" | "PUT" | "DELETE";
-  url: string;
+  endpoint: string;
   data?: any;
   headers?: any;
   params?: Record<string, any>;
@@ -19,7 +19,7 @@ const api = axios.create({
 
 export const requestHandler = async ({
   method,
-  url,
+  endpoint,
   data = null,
   headers = {},
   params = {},
@@ -27,11 +27,12 @@ export const requestHandler = async ({
   try {
     const response = await api({
       method,
-      url,
+      url: endpoint,
       data,
       headers,
       params,
     });
+    console.log(response.data);
     return response.data;
   } catch (error) {
     if (error instanceof AxiosError)

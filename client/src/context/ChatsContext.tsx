@@ -1,13 +1,15 @@
 import React, { createContext, useContext, useState } from "react";
-import { User } from "@/lib/types/types";
+import { Chat, User } from "@/lib/types/types";
 
 interface IChatContext {
-  chats: User[];
-  groupChats: User[];
+  chats: Chat[];
+  groupChats: Chat[];
   searchResults: User[];
-  setChats: React.Dispatch<React.SetStateAction<User[]>>;
-  setGroupChats: React.Dispatch<React.SetStateAction<User[]>>;
+  setChats: React.Dispatch<React.SetStateAction<Chat[]>>;
+  setGroupChats: React.Dispatch<React.SetStateAction<Chat[]>>;
   setSearchResults: React.Dispatch<React.SetStateAction<User[]>>;
+  activeChatId: string | null;
+  setActiveChatId: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
 const ChatContext = createContext<IChatContext | null>(null);
@@ -17,9 +19,10 @@ export function ChatContextProvder({
 }: {
   children: React.ReactNode;
 }) {
-  const [chats, setChats] = useState<User[]>([]);
-  const [groupChats, setGroupChats] = useState<User[]>([]);
+  const [chats, setChats] = useState<Chat[]>([]);
+  const [groupChats, setGroupChats] = useState<Chat[]>([]);
   const [searchResults, setSearchResults] = useState<User[]>([]);
+  const [activeChatId, setActiveChatId] = useState<string | null>(null);
   return (
     <ChatContext.Provider
       value={{
@@ -29,6 +32,8 @@ export function ChatContextProvder({
         setChats,
         setGroupChats,
         setSearchResults,
+        activeChatId,
+        setActiveChatId,
       }}
     >
       {children}
@@ -37,7 +42,8 @@ export function ChatContextProvder({
 }
 
 export const useChat = () => {
-    const context = useContext(ChatContext);
-    if(!context) throw Error("useChat must be used within the ChatContextProvider");
-    return context;
-}
+  const context = useContext(ChatContext);
+  if (!context)
+    throw Error("useChat must be used within the ChatContextProvider");
+  return context;
+};

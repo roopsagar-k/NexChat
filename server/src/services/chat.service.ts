@@ -9,13 +9,13 @@ export class ChatService {
     recipientid: string,
     name: string
   ) {
-    const chat = await Chat.find({
+    const existingChat = await Chat.findOne({
       isGroup: false,
-      members: { $in: [recipientid, userId] },
-    });
+      members: { $all: [recipientid, userId] },
+    }).populate("members", "username email name");
 
-    if (chat) {
-      return chat;
+    if (existingChat) {
+      return existingChat;
     }
 
     const newChat = await Chat.create({
@@ -24,7 +24,10 @@ export class ChatService {
       members: [recipientid, userId],
     });
 
-    return newChat;
+    return await Chat.findById(newChat._id).populate(
+      "members",
+      "username email name"
+    );
   }
 
   static async getAllOnetoOneChats(limit = 20, page = 1, userId: string) {
@@ -35,7 +38,8 @@ export class ChatService {
       members: { $in: [userId] },
     })
       .skip(skip)
-      .limit(limit);
+      .limit(limit)
+      .populate("members", "username email name");
 
     return chats;
   }
@@ -60,8 +64,8 @@ export class ChatService {
     });
 
     return await Chat.findById(chat._id)
-      .populate("members", "username email")
-      .populate("groupAdmin", "username email");
+      .populate("members", "username email name")
+      .populate("groupAdmin", "username email name");
   }
 
   static async getAllGroupChats(limit = 20, page = 1, userId: string) {
@@ -72,13 +76,16 @@ export class ChatService {
       members: { $in: [userId] },
     })
       .skip(skip)
-      .limit(limit);
+      .limit(limit)
+      .populate("members", "username email name");
 
     return chats;
   }
 
   static async getGroupChatById(chatId: string) {
-    const chat = await Chat.findById(chatId);
+    const chat = await Chat.findById(chatId)
+      .populate("members", "username email name")
+      .populate("groupAdmin", "username email name");
     return chat;
   }
 
@@ -87,7 +94,9 @@ export class ChatService {
       { _id: groupId, isGroup: true },
       { $set: data },
       { new: true }
-    ).populate("members", "username email");
+    )
+      .populate("members", "username email name")
+      .populate("groupAdmin", "username email name");
 
     return updatedChat;
   }
@@ -110,9 +119,10 @@ export class ChatService {
       { _id: groupId, groupAdmin: userId },
       { $push: { members: { $each: userIds } } },
       { new: true }
-    );
+    ).populate("members", "username email name");
+
     if (groupChat) {
-      return true;
+      return groupChat;
     }
 
     return false;
@@ -125,10 +135,10 @@ export class ChatService {
   ) {
     const groupChat = await Chat.findOneAndUpdate(
       { _id: groupId, groupAdmin: userId },
-      { $pull: { members: { $each: userIds } } },
+      { $pull: { members: { $in: userIds } } },
       { new: true }
-    );
+    ).populate("members", "username email name");
 
-    return groupChat?.members || null;
+    return groupChat || null;
   }
 }
