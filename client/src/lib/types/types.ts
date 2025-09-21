@@ -39,7 +39,8 @@ export type MessageWithSender = {
     email: string;
   };
   content: string;
-  attachments: [];
+  attachments: string[];
   createdAt: Date;
   updatedAt: Date;
+  pending?: boolean
 };

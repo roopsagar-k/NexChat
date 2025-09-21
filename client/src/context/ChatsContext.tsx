@@ -10,6 +10,11 @@ interface IChatContext {
   setSearchResults: React.Dispatch<React.SetStateAction<User[]>>;
   activeChatId: string | null;
   setActiveChatId: React.Dispatch<React.SetStateAction<string | null>>;
+  // Search states
+  chatSearchQuery: string;
+  setChatSearchQuery: React.Dispatch<React.SetStateAction<string>>;
+  groupSearchQuery: string;
+  setGroupSearchQuery: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const ChatContext = createContext<IChatContext | null>(null);
@@ -23,6 +28,9 @@ export function ChatContextProvder({
   const [groupChats, setGroupChats] = useState<Chat[]>([]);
   const [searchResults, setSearchResults] = useState<User[]>([]);
   const [activeChatId, setActiveChatId] = useState<string | null>(null);
+  const [chatSearchQuery, setChatSearchQuery] = useState<string>("");
+  const [groupSearchQuery, setGroupSearchQuery] = useState<string>("");
+  
   return (
     <ChatContext.Provider
       value={{
@@ -34,6 +42,10 @@ export function ChatContextProvder({
         setSearchResults,
         activeChatId,
         setActiveChatId,
+        chatSearchQuery,
+        setChatSearchQuery,
+        groupSearchQuery,
+        setGroupSearchQuery,
       }}
     >
       {children}

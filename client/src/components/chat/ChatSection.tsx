@@ -7,6 +7,8 @@ import { EmptyState } from "./EmptyState";
 import { cn } from "@/lib/utils";
 import { useSocket } from "@/hooks/Socket";
 import { MessageWithSender } from "@/lib/types/types";
+import { uploadImage } from "@/lib/api";
+import { useAuth } from "@/hooks/AuthProvider";
 
 const ChatSection = () => {
   const { activeChatId } = useChat();
@@ -16,6 +18,7 @@ const ChatSection = () => {
   const [isTyping, setIsTyping] = useState(false);
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const { socket } = useSocket();
+  const { user } = useAuth();
 
   async function getMessages(chatId: string | null) {
     if (chatId === null) return;
@@ -30,7 +33,7 @@ const ChatSection = () => {
       });
 
       if (success) {
-        console.log('messages', data)
+        console.log("messages", data);
         setMessages(data);
       } else {
         setError(message || "Failed to load messages");
@@ -43,14 +46,38 @@ const ChatSection = () => {
     }
   }
 
-  async function sendMessage(content: string) {
-    if (!activeChatId || !content.trim()) return;
+  async function sendMessage(content: string, images?: File[]) {
+    if (!activeChatId || (!content.trim() && images?.length === 0)) return;
+
+    const tempId = `temp-${Date.now()}`;
+    const localUrls = images?.map((file) => URL.createObjectURL(file)) || [];
+
+    const tempMessage: MessageWithSender = {
+      _id: tempId,
+      chatId: activeChatId,
+      content: content.trim(),
+      attachments: localUrls, // show instantly
+      sender: user!, // current logged-in user
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      pending: true, // custom flag
+    };
+
+    // Show instantly
+    setMessages((prev) => [...prev, tempMessage]);
+
+    let keys = null;
+    if (images && images.length > 0) {
+      keys = await Promise.all(images.map((image) => uploadImage(image)));
+    }
 
     socket?.emit("new-message", {
       chatId: activeChatId,
       content: content.trim(),
+      keys: keys || [],
+      tempId,
     });
-    console.log("new message event triggered")
+    console.log("new message event triggered");
   }
 
   const handleTyping = () => {
@@ -81,8 +108,10 @@ const ChatSection = () => {
   }, [activeChatId]);
 
   useEffect(() => {
-    socket?.on("message-sent", ({ message }) => {
-      setMessages((prev) => [...prev, message]);
+    socket?.on("message-sent", ({ message, tempId }) => {
+      setMessages((prev) =>
+        prev.map((m) => (m._id === tempId ? { ...message, pending: false } : m))
+      );
     });
 
     socket?.on("new-message-received", ({ message }) => {
@@ -132,7 +161,9 @@ const ChatSection = () => {
           isTyping={isTyping}
         />
       </div>
-      <MessageInput onSendMessage={sendMessage} onTyping={handleTyping} />
+      <div className="flex-shrink-0">
+        <MessageInput onSendMessage={sendMessage} onTyping={handleTyping} />
+      </div>
     </div>
   );
 };

@@ -67,16 +67,16 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background/20 px-4 py-12">
-      <div className="w-full max-w-md space-y-8">
+    <div className="flex min-h-screen items-center justify-center bg-background px-4 py-8 sm:py-12">
+      <div className="w-full max-w-md space-y-6 sm:space-y-8">
         <div className="flex flex-col items-center justify-center text-center">
           <div className="flex items-center space-x-2">
             <MessageSquare className="h-8 w-8 text-primary" />
-            <h1 className="text-3xl font-bold tracking-tight text-primary">
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-primary">
               NexChat
             </h1>
           </div>
-          <p className="mt-2 text-sm text-slate-600">
+          <p className="mt-2 text-sm text-muted-foreground">
             Connect and chat with people around the world
           </p>
         </div>
@@ -128,9 +128,46 @@ export default function LoginPage() {
                 {isLoading ? "Logging in..." : "Login"}
               </Button>
             </form>
+            {/* Google OAuth Button */}
+            <div className="mt-4 flex flex-col space-y-2">
+              <Button
+                variant="outline"
+                className="w-full flex items-center justify-center space-x-2"
+                onClick={() =>
+                  (window.location.href =
+                    `${import.meta.env.VITE_BASE_URL}/api/auth/google` ||
+                    "http://localhost:3000/api/auth/google")
+                }
+                disabled={isLoading}
+              >
+                <svg
+                  className="w-5 h-5"
+                  viewBox="0 0 533.5 544.3"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M533.5 278.4c0-17.4-1.6-34.2-4.7-50.5H272v95.5h147.1c-6.3 34-25.3 62.8-54 82v68h87.1c50.9-46.9 80.3-116.2 80.3-195z"
+                    fill="#4285F4"
+                  />
+                  <path
+                    d="M272 544.3c73.3 0 134.8-24.3 179.8-66.2l-87.1-68c-24.2 16.2-55 25.8-92.7 25.8-71.4 0-131.9-48.2-153.7-113.2h-90.5v70.9c45.3 89.4 137.2 151.7 244.2 151.7z"
+                    fill="#34A853"
+                  />
+                  <path
+                    d="M118.3 323.7c-10.9-32.4-10.9-67.6 0-100h-90.5v-70.9C14.2 195.8 0 233.8 0 272c0 38.2 14.2 76.2 27.8 110.2l90.5-58.5z"
+                    fill="#FBBC05"
+                  />
+                  <path
+                    d="M272 107.7c39.9-.6 77.7 15.4 106.6 45.5l79.7-79.7C406.5 23.6 345 0 272 0 164.9 0 73 62.3 27.8 151.7l90.5 70.9c21.8-65 82.3-113.2 153.7-114.9z"
+                    fill="#EA4335"
+                  />
+                </svg>
+                <span>Continue with Google</span>
+              </Button>
+            </div>
           </CardContent>
           <CardFooter className="flex flex-col space-y-2">
-            <div className="text-sm text-center text-slate-600">
+            <div className="text-sm text-center text-muted-foreground">
               Don&apos;t have an account?{" "}
               <Link to={"/register"} className="text-primary hover:underline">
                 Register

@@ -28,7 +28,7 @@ const IconWrapper = ({
           <div
             onClick={onClick}
             className={cn(
-              "p-2 rounded-md transition-all duration-200 cursor-pointer",
+              "p-2 sm:p-3 rounded-md transition-all duration-200 cursor-pointer",
               isActive
                 ? "text-primary bg-muted"
                 : "text-muted-foreground hover:text-primary hover:bg-muted/70"
@@ -53,13 +53,13 @@ const Panel = ({
   active: PanelStatus;
 }) => {
   return (
-    <div className="w-full h-full flex flex-col justify-center items-center gap-6">
+    <div className="w-full h-full flex flex-col justify-center items-center gap-4 sm:gap-6">
       <IconWrapper
         tooltip="Private Messages"
         isActive={active === "chats"}
         onClick={() => setActive("chats")}
       >
-        <MessageSquareText className="h-6 w-6" id="chats" />
+        <MessageSquareText className="h-5 w-5 sm:h-6 sm:w-6" id="chats" />
       </IconWrapper>
 
       <IconWrapper
@@ -67,7 +67,7 @@ const Panel = ({
         isActive={active === "group-chats"}
         onClick={() => setActive("group-chats")}
       >
-        <Users className="h-6 w-6" id="group-chats" />
+        <Users className="h-5 w-5 sm:h-6 sm:w-6" id="group-chats" />
       </IconWrapper>
 
       <IconWrapper
@@ -75,7 +75,7 @@ const Panel = ({
         isActive={active === "user-search"}
         onClick={() => setActive("user-search")}
       >
-        <UserSearch className="h-6 w-6" id="user-search" />
+        <UserSearch className="h-5 w-5 sm:h-6 sm:w-6" id="user-search" />
       </IconWrapper>
     </div>
   );

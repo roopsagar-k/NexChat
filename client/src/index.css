@@ -117,4 +117,51 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  /* Mobile-first responsive utilities */
+  .container {
+    @apply w-full mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  /* Smooth scrolling for mobile */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Better touch targets for mobile */
+  @media (max-width: 768px) {
+    button, [role="button"] {
+      min-height: 44px;
+      min-width: 44px;
+    }
+  }
+
+  /* Prevent zoom on input focus on iOS */
+  @media screen and (max-width: 768px) {
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    textarea {
+      font-size: 16px;
+    }
+  }
+
+  /* Better text truncation and overflow handling */
+  .truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Ensure proper flex behavior for chat items */
+  .chat-item {
+    min-width: 0;
+    flex: 1;
+  }
+
+  /* Prevent sidebar content from overflowing */
+  .sidebar-content {
+    min-width: 0;
+    overflow: hidden;
+  }
 }

@@ -79,7 +79,7 @@ export function MessageList({
   return (
     <div
       ref={containerRef}
-      className="flex flex-col h-full overflow-y-auto p-4 space-y-4 scroll-smooth"
+      className="flex flex-col h-full overflow-y-auto p-3 sm:p-4 space-y-3 sm:space-y-4 scroll-smooth"
     >
       {isLoading && !messages.length ? (
         <div className="space-y-4">

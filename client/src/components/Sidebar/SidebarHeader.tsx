@@ -1,4 +1,4 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAuth } from "@/hooks/AuthProvider";
@@ -14,13 +14,19 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const SidebarHeader = ({ active }: { active: PanelStatus }) => {
   const { user, loading, logout } = useAuth();
 
   return (
-    <div className="border-b border-border/40 w-full">
-      <div className="flex items-center justify-between p-4">
+    <div className="border-b border-border w-full">
+      <div className="flex items-center justify-between p-3 sm:p-4">
         <div className="flex items-center gap-3">
           {loading ? (
             <Skeleton className="h-10 w-10 rounded-full" />
@@ -31,7 +37,7 @@ const SidebarHeader = ({ active }: { active: PanelStatus }) => {
               </AvatarFallback>
             </Avatar>
           )}
-          <div className="space-y-1">
+          <div className="space-y-1 min-w-0 flex-1">
             {loading ? (
               <>
                 <Skeleton className="h-5 w-24" />
@@ -39,10 +45,30 @@ const SidebarHeader = ({ active }: { active: PanelStatus }) => {
               </>
             ) : (
               <>
-                <h3 className="font-medium leading-none">{user?.username}</h3>
-                <p className="text-xs text-muted-foreground leading-none mt-1">
-                  {user?.email}
-                </p>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <h3 className="font-medium leading-none truncate cursor-pointer">
+                        {user?.username}
+                      </h3>
+                    </TooltipTrigger>
+                    <TooltipContent side="top" className="max-w-xs">
+                      <p className="break-words">Username: {user?.username}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <p className="text-xs text-muted-foreground leading-none mt-1 truncate cursor-pointer">
+                        {user?.email}
+                      </p>
+                    </TooltipTrigger>
+                    <TooltipContent side="top" className="max-w-xs">
+                      <p className="break-words">Email: {user?.email}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </>
             )}
           </div>
@@ -75,7 +101,7 @@ const SidebarHeader = ({ active }: { active: PanelStatus }) => {
           </DialogContent>
         </Dialog>
       </div>
-      <div className="px-4 pb-3 pt-1">
+      <div className="px-3 sm:px-4 pb-3 pt-1">
         {active === "chats" && <UserChatSearch />}
         {active === "group-chats" && <UserGroupSearch />}
         {active === "user-search" && <RandomUserSearch />}

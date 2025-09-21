@@ -1,4 +1,5 @@
 import axios, { AxiosError } from "axios";
+import { toast } from "sonner";
 
 interface IRequestHandler {
   method: "POST" | "GET" | "PUT" | "DELETE";
@@ -35,8 +36,11 @@ export const requestHandler = async ({
     console.log(response.data);
     return response.data;
   } catch (error) {
-    if (error instanceof AxiosError)
-      console.error("Request failed:", error.response?.data || error.message);
+    if(error instanceof AxiosError) {
+      toast.error(`Request failed: ${error.response?.data || error.message}`);
+    } else {
+      toast.error(`Request failed: ${error instanceof Error ? error.message : "Unknown error"}`);
+    }
     throw error;
   }
 };

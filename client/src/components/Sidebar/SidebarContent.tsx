@@ -27,8 +27,7 @@ interface SidebarContentProps {
 }
 
 const SidebarContent = ({ active }: SidebarContentProps) => {
-  const { searchResults, chats, setChats, groupChats, setGroupChats } =
-    useChat();
+  const { searchResults, setChats, setGroupChats } = useChat();
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [chatType, setChatType] = useState<"one-to-one" | "group" | null>(null);
@@ -140,12 +139,12 @@ const SidebarContent = ({ active }: SidebarContentProps) => {
 
   // Render user search results panel
   if (active === "user-search") {
-    return (
-      <div className="flex flex-col h-full">
+  return (
+    <div className="flex flex-col h-full sidebar-content">
         {/* Header with selection count and action buttons */}
         <div
           className={cn(
-            "py-3 px-4 flex justify-between items-center border-b border-border mb-2 transition-all duration-300",
+            "py-3 px-3 sm:px-4 flex justify-between items-center border-b border-border mb-2 transition-all duration-300",
             selectedUsers.length > 0
               ? "opacity-100"
               : "opacity-0 pointer-events-none h-0 py-0 mb-0"
@@ -182,7 +181,7 @@ const SidebarContent = ({ active }: SidebarContentProps) => {
         </div>
 
         {/* User list */}
-        <div className="flex-1 overflow-y-auto p-2 space-y-1">
+        <div className="flex-1 overflow-y-auto p-2 space-y-1 min-w-0 max-w-auto">
           {searchResults.length > 0 ? (
             searchResults.map((user) => (
               <UserCard
@@ -199,7 +198,7 @@ const SidebarContent = ({ active }: SidebarContentProps) => {
               </div>
               <p>No users found</p>
               <p className="text-sm mt-1">
-                Try searching with a different term
+                Search for users by username or email
               </p>
             </div>
           )}
