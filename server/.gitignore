@@ -1,6 +1,5 @@
 # Environments
 .env
-.env.*
 
 node_modules
 private.md
