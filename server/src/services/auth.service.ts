@@ -12,43 +12,43 @@ export class AuthService {
       ApiError.badRequest("Email not valid, Please enter proper email.");
     }
 
-    const user = await User.findOne({
-      email,
-    });
-
+    const user = await User.findOne({ email });
     if (user) {
       ApiError.conflict("User already exists with the provided email.");
     }
 
-    const hashedPassword = await bcrypt.hash(password, this.SALT_ROUND);
-
     const newUser = await User.create({
       username,
       email,
-      password: hashedPassword,
+      password,
     });
-    newUser.save();
 
     return newUser;
   }
 
   static async loginUser(email: string, password: string) {
+
+    console.log("login route hit")
     const validEmail = this.validateEmail(email);
     if (!validEmail) {
       throw ApiError.badRequest("Enter the proper email to login.");
     }
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).select("+password");
+
+    console.log("user got", user)
     if (!user) {
       throw ApiError.notFound(
-        "User not found, Please try again by entering the proper email."
+        "User not found, Please try again with a proper email."
       );
     }
 
-    const validPassword = await bcrypt.compare(password, user.password);
+    const validPassword = await user.comparePassword(password);
     if (!validPassword) {
       throw ApiError.unauthorized("Password mismatch.");
     }
+
+    console.log("user log", user)
 
     const token = JWT.generateToken({
       id: user._id,

@@ -3,7 +3,17 @@ import { asyncHandler } from "../services/helpers";
 import ApiError from "../utils/api-error.utils";
 import { AuthService } from "../services/auth.service";
 import ApiResponse from "../utils/api-response.utils";
+import { OAuth2Client } from "google-auth-library";
 import User from "../models/user.model";
+import { JWT } from "../services/jwt.service";
+
+
+const client = new OAuth2Client({
+  clientId: process.env.GOOGLE_CLIENT_ID,
+  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+  redirectUri: "http://localhost:3000/api/auth/google/callback",
+});
+
 
 export const registerController = asyncHandler(
   async (req: Request, res: Response, _next: NextFunction) => {
@@ -51,6 +61,54 @@ export const loginController = asyncHandler(
       .json(
         new ApiResponse(200, { token }, "User authenticated successfully.")
       );
+  }
+);
+
+
+// Redirect to Google consent screen
+export const googleLoginController = (req: Request, res: Response) => {
+  const url = client.generateAuthUrl({
+    access_type: "offline",
+    scope: ["profile", "email"],
+    prompt: "consent",
+  });
+  res.redirect(url);
+};
+
+// Handle Google callback
+export const googleCallbackController = asyncHandler(
+  async (req: Request, res: Response) => {
+    const code = req.query.code as string;
+    if (!code) return res.status(400).send("No code provided");
+
+    const { tokens } = await client.getToken(code);
+    client.setCredentials(tokens);
+
+    const ticket = await client.verifyIdToken({
+      idToken: tokens.id_token!,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+    const payload = ticket.getPayload();
+
+    if (!payload || !payload.email) throw ApiError.unauthorized("Google OAuth failed!");
+
+    let user = await User.findOne({ email: payload.email });
+    if (!user) {
+      user = await User.create({
+        username: payload.name,
+        email: payload.email,
+        password: "google-oauth",
+      });
+    }
+
+    const token = JWT.generateToken({
+      id: user._id,
+      username: user.username,
+      email: user.email,
+    });
+
+    // Redirect to frontend with token
+    res.redirect(`http://localhost:5173/login/success?token=${token}`);
   }
 );
 

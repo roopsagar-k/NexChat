@@ -28,11 +28,12 @@ export class MessageService {
     return messages;
   }
 
-  static async addMessage(userId: string, chatId: string, message: string) {
+  static async addMessage(userId: string, chatId: string, message: string, attachments: string[]) {
     const createdMessage = await Message.create({
       chatId,
       sender: userId,
       content: message,
+      attachments,
     });
 
     return await Message.findById(createdMessage._id)

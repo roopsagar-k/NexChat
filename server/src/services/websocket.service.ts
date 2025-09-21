@@ -2,6 +2,7 @@ import { Server, Socket } from "socket.io";
 import { MessageService } from "./message.service";
 import ApiError from "../utils/api-error.utils";
 import User from "../models/user.model";
+import { ENV } from "../config";
 
 export class Websocket {
   private static instance: Websocket;
@@ -55,15 +56,17 @@ export class Websocket {
       });
 
       // Message events
-      socket.on("new-message", async ({ chatId, content }) => {
+      socket.on("new-message", async ({ chatId, content, keys, tempId }) => {
+        const attachments = keys?.map((key: string) => `${ENV.CDN_URL}/${key}`) || [];
         const created = await MessageService.addMessage(
           userId!,
           chatId,
-          content
+          content,
+          attachments,
         );
 
         socket.to(chatId).emit("new-message-received", { message: created });
-        socket.emit("message-sent", { message: created });
+        socket.emit("message-sent", { message: created, tempId });
       });
 
       socket.on("message-received", ({ messageId, chatId }) => {

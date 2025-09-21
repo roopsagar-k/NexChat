@@ -10,7 +10,6 @@ import { ENV } from "./config";
 import { verifySocketJWT } from "./middleware/auth..middleware";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-
 declare global {
   namespace Express {
     interface Request {
