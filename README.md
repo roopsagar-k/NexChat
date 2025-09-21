@@ -1,6 +1,6 @@
-# NextChat
+# NexChat
 
-NextChat is a real-time chat application built with modern technologies, supporting both single and group chats, image sharing, and user authentication using OAuth and JWT.  
+NexChat is a real-time chat application built with modern technologies, supporting both single and group chats, image sharing, and user authentication using OAuth and JWT.  
 
 ---
 
