@@ -23,6 +23,11 @@ declare global {
 }
 
 export const app = express();
+
+app.get("/", (_req, res) => {
+  res.send("<h1>NexChat Server running....</h1>")
+})
+
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
