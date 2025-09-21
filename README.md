@@ -1,33 +1,55 @@
 # NexChat
 
-NexChat is a real-time chat application built with modern technologies, supporting both single and group chats, image sharing, and user authentication using OAuth and JWT.  
+NexChat is a real-time chat application with single and group chat functionalities, user search, and image sharing.
 
----
+## Tech Stack
 
-## 🛠 Tech Stack
+* MongoDB
+* React
+* Node.js
+* TypeScript
+* Socket.io
 
-- **Frontend:** React, TypeScript  
-- **Backend:** Node.js, TypeScript, Express  
-- **Database:** MongoDB  
-- **Real-time Communication:** Socket.IO  
-- **Authentication:**  
-  - OAuth (Google)  
-  - Local auth (JWT)  
-- **Storage:** Images stored in Cloudflare R2 using S3 client  
+## Authentication
 
----
+* OAuth (Google)
+* Local authentication (JWT)
 
-## ⚡ Features
+## Features
 
-- **Single Chat:** One-on-one messaging with other users.  
-- **Group Chat:** Create groups and chat with multiple users.  
-- **User Search:** Search for random users and initiate a chat with them.  
-- **Image Sharing:** Send and receive images in chats.  
-- **Real-time updates:** Messages and typing indicators update instantly.  
-- **Authentication:** Secure login with Google OAuth or local JWT-based authentication.  
+* Single chat and group chat
+* Search for random users and create chats
+* Share images in chats
+* Images are stored in Cloudflare R2 using S3 client
 
----
+## Installation
 
+### Client
 
+```bash
+cd client
+npm i
+npm run dev
+```
 
+### Server
 
+```bash
+cd server
+npm i
+npm run dev
+```
+
+## Screenshots
+
+![NexChat 1](https://www.roopsagar.tech/_next/image?url=%2Fnex-chat-4.png\&w=1080\&q=75)
+
+![NexChat 2](https://www.roopsagar.tech/_next/image?url=%2Fnex-chat-3.png\&w=1080\&q=75)
+
+![NexChat 3](https://www.roopsagar.tech/_next/image?url=%2Fnex-chat-1.png\&w=1080\&q=75)
+
+![NexChat 4](https://www.roopsagar.tech/_next/image?url=%2Fnex-chat-2.png\&w=1080\&q=75)
+
+## Repository
+
+[https://github.com/roopsagar-k/NexChat](https://github.com/roopsagar-k/NexChat)
