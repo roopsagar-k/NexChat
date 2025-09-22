@@ -7,13 +7,12 @@ import { OAuth2Client } from "google-auth-library";
 import User from "../models/user.model";
 import { JWT } from "../services/jwt.service";
 
-
 const client = new OAuth2Client({
   clientId: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  redirectUri: "http://localhost:3000/api/auth/google/callback",
+  redirectUri:
+    "http://ko4sk4w4s80kw8kw8g4okwwg.89.117.36.149.sslip.io/api/auth/google/callback",
 });
-
 
 export const registerController = asyncHandler(
   async (req: Request, res: Response, _next: NextFunction) => {
@@ -64,7 +63,6 @@ export const loginController = asyncHandler(
   }
 );
 
-
 // Redirect to Google consent screen
 export const googleLoginController = (req: Request, res: Response) => {
   const url = client.generateAuthUrl({
@@ -90,7 +88,8 @@ export const googleCallbackController = asyncHandler(
     });
     const payload = ticket.getPayload();
 
-    if (!payload || !payload.email) throw ApiError.unauthorized("Google OAuth failed!");
+    if (!payload || !payload.email)
+      throw ApiError.unauthorized("Google OAuth failed!");
 
     let user = await User.findOne({ email: payload.email });
     if (!user) {
@@ -108,7 +107,9 @@ export const googleCallbackController = asyncHandler(
     });
 
     // Redirect to frontend with token
-    res.redirect(`http://localhost:5173/login/success?token=${token}`);
+    res
+      .cookie("token", token)
+      .redirect(`https://nex-chat-app-ten.vercel.app/home`);
   }
 );
 
