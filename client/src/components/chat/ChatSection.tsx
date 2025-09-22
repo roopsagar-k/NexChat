@@ -126,13 +126,13 @@ const ChatSection = () => {
       setMessages((prev) => prev.filter((msg) => msg._id !== messageId));
     });
 
-    socket?.on("user-typing", ({ userId, chatId }) => {
+    socket?.on("user-typing", ({ chatId }) => {
       if (chatId === activeChatId) {
         setIsTyping(true);
       }
     });
 
-    socket?.on("user-stopped-typing", ({ userId, chatId }) => {
+    socket?.on("user-stopped-typing", ({ chatId }) => {
       if (chatId === activeChatId) {
         setIsTyping(false);
       }

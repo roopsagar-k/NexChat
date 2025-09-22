@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/tooltip";
 import type { MessageWithSender } from "@/lib/types/types";
 import { useAuth } from "@/hooks/AuthProvider";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 
 interface MessageProps {

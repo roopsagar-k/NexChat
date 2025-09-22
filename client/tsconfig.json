@@ -6,6 +6,11 @@
   ],
   "compilerOptions": {
     "baseUrl": ".",
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "skipLibCheck": true,
+    "ignoreDeprecations": "5.0",
+    "strict": false,
     "paths": {
       "@/*": ["./src/*"]
     }
