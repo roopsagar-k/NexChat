@@ -26,6 +26,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    axios.defaults.baseURL =
+      import.meta.env.VITE_BASE_URL || "http://localhost:3000";
     axios.defaults.withCredentials = true;
   }, []);
 
