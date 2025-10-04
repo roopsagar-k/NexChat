@@ -108,7 +108,11 @@ export const googleCallbackController = asyncHandler(
 
     // Redirect to frontend with token
     res
-      .cookie("token", token)
+      .cookie("token", token, {
+        httpOnly: true,
+        sameSite: "lax",
+        secure: process.env.NODE_ENV === "production",
+      })
       .redirect(`https://nex-chat-app-ten.vercel.app/home`);
   }
 );
