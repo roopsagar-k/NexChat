@@ -11,7 +11,16 @@ const client = new OAuth2Client({
   clientId: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
   redirectUri:
-    "http://ko4sk4w4s80kw8kw8g4okwwg.89.117.36.149.sslip.io/api/auth/google/callback",
+    "https://nexchat-backend.roopsagar.tech/api/auth/google/callback",
+});
+
+// Cookie configuration helper
+const getCookieConfig = () => ({
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production", // true only in production (HTTPS required)
+  sameSite: "none" as const, // Required for cross-origin
+  maxAge: 24 * 60 * 60 * 1000, // 24 hours
+  path: "/", // Important: ensure cookie is available on all paths
 });
 
 export const registerController = asyncHandler(
@@ -45,18 +54,15 @@ export const loginController = asyncHandler(
 
     if (!email || !password) {
       throw ApiError.badRequest(
-        "Email and password is requied for logging in."
+        "Email and password is required for logging in."
       );
     }
 
     const token = await AuthService.loginUser(email, password);
+
     res
       .status(200)
-      .cookie("token", token, {
-        httpOnly: true,
-        sameSite: "none",
-        secure: process.env.NODE_ENV === "production",
-      })
+      .cookie("token", token, getCookieConfig())
       .json(
         new ApiResponse(200, { token }, "User authenticated successfully.")
       );
@@ -106,14 +112,11 @@ export const googleCallbackController = asyncHandler(
       email: user.email,
     });
 
-    // Redirect to frontend with token
-    res
-      .cookie("token", token, {
-        httpOnly: true,
-        sameSite: "none",
-        secure: process.env.NODE_ENV === "production",
-      })
-      .redirect(`https://nex-chat-app-ten.vercel.app/home`);
+    // Set cookie before redirect
+    res.cookie("token", token, getCookieConfig());
+
+    // Redirect to frontend
+    res.redirect(`https://nex-chat-app-ten.vercel.app/home`);
   }
 );
 
@@ -129,6 +132,7 @@ export const logoutController = asyncHandler(
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "none",
+        path: "/",
       })
       .json(new ApiResponse(200, {}, "User logged out from the session"));
   }
