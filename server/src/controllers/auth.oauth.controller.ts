@@ -60,7 +60,7 @@ export const googleCallbackController = asyncHandler(
       .status(200)
       .cookie("token", token, {
         httpOnly: true,
-        sameSite: "lax",
+        sameSite: ENV.NODE_ENV === "production" ? "none" : "lax",
         secure: process.env.NODE_ENV === "production",
       })
       .redirect(`${ENV.CLIENT_URL}/home`);
