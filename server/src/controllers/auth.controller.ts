@@ -6,10 +6,11 @@ import ApiResponse from "../utils/api-response.utils";
 import { OAuth2Client } from "google-auth-library";
 import User from "../models/user.model";
 import { JWT } from "../services/jwt.service";
+import { ENV } from "../config/env";
 
 const client = new OAuth2Client({
-  clientId: process.env.GOOGLE_CLIENT_ID,
-  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+  clientId: ENV.GOOGLE_CLIENT_ID,
+  clientSecret: ENV.GOOGLE_CLIENT_SECRET,
   redirectUri:
     "https://nexchat-backend.roopsagar.tech/api/auth/google/callback",
 });
@@ -17,7 +18,7 @@ const client = new OAuth2Client({
 // Cookie configuration helper
 const getCookieConfig = () => ({
   httpOnly: true,
-  secure: process.env.NODE_ENV === "production", // true only in production (HTTPS required)
+  secure: ENV.NODE_ENV === "production", // true only in production (HTTPS required)
   sameSite: "none" as const, // Required for cross-origin
   maxAge: 24 * 60 * 60 * 1000, // 24 hours
   path: "/", // Important: ensure cookie is available on all paths
@@ -90,7 +91,7 @@ export const googleCallbackController = asyncHandler(
 
     const ticket = await client.verifyIdToken({
       idToken: tokens.id_token!,
-      audience: process.env.GOOGLE_CLIENT_ID,
+      audience: ENV.GOOGLE_CLIENT_ID,
     });
     const payload = ticket.getPayload();
 
@@ -130,7 +131,7 @@ export const logoutController = asyncHandler(
       .status(200)
       .clearCookie("token", {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
+        secure: ENV.NODE_ENV === "production",
         sameSite: "none",
         path: "/",
       })

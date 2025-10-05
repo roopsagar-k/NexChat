@@ -13,4 +13,5 @@ export const ENV = {
   GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
   BACKEND_URL: (process.env.BACKEND_URL || "").toString(),
   CDN_URL: (process.env.CDN_URL || "").toString(),
+  NODE_ENV: (process.env.NODE_ENV || "development").toString(),
 };
