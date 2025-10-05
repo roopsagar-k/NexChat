@@ -54,7 +54,7 @@ export const loginController = asyncHandler(
       .status(200)
       .cookie("token", token, {
         httpOnly: true,
-        sameSite: "lax",
+        sameSite: "none",
         secure: process.env.NODE_ENV === "production",
       })
       .json(
@@ -110,7 +110,7 @@ export const googleCallbackController = asyncHandler(
     res
       .cookie("token", token, {
         httpOnly: true,
-        sameSite: "lax",
+        sameSite: "none",
         secure: process.env.NODE_ENV === "production",
       })
       .redirect(`https://nex-chat-app-ten.vercel.app/home`);
@@ -128,7 +128,7 @@ export const logoutController = asyncHandler(
       .clearCookie("token", {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
+        sameSite: "none",
       })
       .json(new ApiResponse(200, {}, "User logged out from the session"));
   }

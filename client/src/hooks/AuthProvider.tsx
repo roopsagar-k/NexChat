@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { User } from "@/lib/types/types";
 import axios from "axios";
+import { toast } from "sonner";
 
 type AuthContextType = {
   user: User | null;
@@ -53,6 +54,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (axios.isAxiosError(error)) {
         console.error("Auth error:", error.response?.data || error.message);
         setError(error.message);
+        toast.error(error.message);
         setUser(null);
       }
     } finally {
