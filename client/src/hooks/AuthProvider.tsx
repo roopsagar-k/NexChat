@@ -32,6 +32,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     axios.defaults.withCredentials = true;
   }, []);
 
+  useEffect(() => {
+    const cached = localStorage.getItem("user");
+    if (cached) setUser(JSON.parse(cached));
+    getUser();
+  }, []);
+
+  useEffect(() => {
+    if (user) localStorage.setItem("user", JSON.stringify(user));
+    else localStorage.removeItem("user");
+  }, [user]);
+
+
   const getUser = async () => {
     setLoading(true);
     try {
@@ -102,18 +114,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  // Initial auth check
-  useEffect(() => {
-    console.log("Performing initial auth check...");
-    getUser();
-  }, []);
-
   return (
     <AuthContext.Provider
       value={{ user, loading, error, login, logout, refreshUser }}
     >
       {children}
-    </AuthContext.Provider>
+    </AuthContext.Provider> 
   );
 }
 
