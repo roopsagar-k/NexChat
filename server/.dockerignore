@@ -1,0 +1,43 @@
+# Node dependencies
+node_modules
+npm-debug.log
+yarn-error.log
+
+# Build output (we’ll copy only from build stage)
+dist
+build
+
+# Environment files
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+
+# Logs
+logs
+*.log
+*.pid
+*.seed
+*.pid.lock
+
+# OS / editor files
+.DS_Store
+Thumbs.db
+.idea
+.vscode
+*.swp
+
+# Docker files
+Dockerfile
+docker-compose.yml
+
+# Tests & coverage
+coverage
+__tests__
+*.test.ts
+*.spec.ts
+
+# Git
+.git
+.gitignore

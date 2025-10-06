@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./server
+    ports:
+      - "3000:3000"
+    env_file:
+      - "./server/.env"
+    depends_on:
+      - mongo
+
+  client:
+    build:
+      context: ./client
+    ports:
+      - "8000:80"
+    env_file:
+      - "./client/.env"
+    depends_on: 
+      - backend
+      
+  mongo:
+    image: mongo:latest
+    container_name: mongod
+    volumes:
+      - mongo_data:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=nexchat
+
+volumes:
+  mongo_data:

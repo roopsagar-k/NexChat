@@ -33,7 +33,9 @@ app.use(
       const allowedOrigins = [
         "https://nex-chat-app-ten.vercel.app",
         "http://localhost:5173",
-        "http://localhost:5174", 
+        "http://localhost:5174",
+        "http://localhost:8000",
+        "http://backend:3000",
       ];
 
       // Allow requests with no origin (like mobile apps or curl requests)
